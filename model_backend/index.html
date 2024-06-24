@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Inference</title>
+</head>
+
+<body>
+    <h1>Upload an Image for Prediction</h1>
+    <input type="file" id="fileInput">
+    <button onclick="predict()">Predict</button>
+    <p id="result"></p>
+
+    <script>
+        async function predict() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log(result);
+                document.getElementById('result').innerText = JSON.stringify(result);
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('result').innerText = 'Prediction failed';
+            }
+        }
+    </script>
+</body>
+
+</html>
